@@ -1,0 +1,18 @@
+const stripe = require('stripe')('pk_test_51QHkdZHDJ1safCsBEnwKRjyp8WyRxCLZPW2e8LYcK81FgHNWFnAsqdDjurkJuwk4Wtltp8e8JHlGmPuz68spsARN00yYYQiXuV'); // Podstaw swój sekretny klucz Stripe
+
+exports.handler = async (event, context) => {
+  const { items } = JSON.parse(event.body);
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card', 'p24', 'blik'],
+    line_items: items,
+    mode: 'payment',
+    success_url: 'https://twoja-strona.com/sukces',
+    cancel_url: 'https://twoja-strona.com/anulowano',
+  });
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ id: session.id }),
+  };
+};
